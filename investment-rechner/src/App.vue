@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from 'vue';
 
 const bitcoinPrice = 98738;
 
@@ -13,30 +13,17 @@ function add() {
     price: inputPrice.value,
   });
   clear();
-  berechnen();
 }
 function clear() {
   inputCount.value = 0;
   inputPrice.value = bitcoinPrice;
 }
 
-const kontostand = ref(0);
-const investment = ref(0);
-const wert = ref(0);
-const gewinn = ref(0);
-function berechnen() {
-  // Kontostand (nur anzahl bitcoins)
-  kontostand.value = investments.value.reduce((acc, inv) => acc + inv.count, 0);
-  // Investiert (anzahl bitcoins * preis)
-  investment.value = investments.value.reduce(
-    (acc, inv) => acc + inv.count * inv.price,
-    0
-  );
-  // Wert (anzahl bitcoins * bitcoin preis)
-  wert.value = kontostand.value * bitcoinPrice;
-  // Gewinn (wert - investment)
-  gewinn.value = wert.value - investment.value;
-}
+const kontostand = computed(() => investments.value.reduce((acc, inv) => acc + inv.count, 0));
+const investment = computed(() => investments.value.reduce((acc, inv) => acc + inv.count * inv.price, 0));
+const wert = computed(() => kontostand.value * bitcoinPrice);
+const gewinn = computed(() => wert.value - investment.value);
+
 </script>
 
 <template>
